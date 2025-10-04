@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flappy Jump</title>
+<style>
+body{margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;}
+canvas{background:#020617;border:2px solid #22d3ee;border-radius:10px;}
+</style>
+</head>
+<body>
+<canvas id="game" width="400" height="600"></canvas>
+<script>
+const canvas=document.getElementById('game');const ctx=canvas.getContext('2d');
+let y=300,v=0,g=0.5,jump=-10,score=0,pipes=[];
+function spawnPipe(){const h=Math.random()*200+100;pipes.push({x:canvas.width,y:0,h:h});pipes.push({x:canvas.width,y:h+150,h:canvas.height});}
+document.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Spacebar')v=jump;});spawnPipe();
+function draw(){
+ctx.fillStyle='#020617';ctx.fillRect(0,0,canvas.width,canvas.height);
+v+=g;y+=v;
+ctx.fillStyle='#22d3ee';ctx.fillRect(50,y,30,30);
+ctx.fillStyle='#facc15';
+for(let i=0;i<pipes.length;i++){ctx.fillRect(pipes[i].x,pipes[i].y,50,pipes[i].h);pipes[i].x-=2;if(pipes[i].x+50<0)pipes.splice(i,1,i);}
+if(Math.random()<0.01)spawnPipe();
+for(let pipe of pipes){if(50<pipe.x+50&&50+30>pipe.x&&y<pipe.h||y+30>pipe.y&&y+30<pipe.y+pipe.h){alert('Game Over! Score: '+score);y=300;v=0;score=0;pipes=[];spawnPipe();}}
+score+=1;ctx.fillStyle='white';ctx.fillText('Score: '+score,10,20);
+requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
